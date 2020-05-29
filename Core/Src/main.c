@@ -40,7 +40,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define	N	16
-#define	F	100
+#define	F	150
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -105,33 +105,19 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC_Buffer, 1);
 
-//  //Funcion rampa
-//	for(int i=0; i<N; i++) {
-//	  if(i <= 7) {
-//		  DAC_Buffer[i] = 2048;
-//	  } else {
-//		  DAC_Buffer[i] = 4000;
-//	  }
-//
-//	  //DAC_Buffer[i]=1;
-//	}
 
-//	DAC_Buffer[0] = 2048;
-//	DAC_Buffer[1] = 2128;
-//	DAC_Buffer[2] = 2244;
-//	DAC_Buffer[3] = 2448;
-    //Funcion rampa
-    for(int i=0; i<N; i++) {
-    	if(i == 0) {
-    		DAC_Buffer[i] = 2048;
-    	} else {
-    		DAC_Buffer[i] = DAC_Buffer[i - 1] + 2048/N;
-    	}
-    }
-    HAL_TIM_Base_Start(&htim2);
-    TimerData=(uint32_t)(80000000/(N*F));
-    TIM2->ARR=TimerData;
-    HAL_DAC_Start_DMA(&hdac1,DAC_CHANNEL_1,(uint32_t *)DAC_Buffer,N,DAC_ALIGN_12B_R);
+//    //Funcion rampa
+//    for(int i=0; i<N; i++) {
+//    	if(i == 0) {
+//    		DAC_Buffer[i] = 2048;
+//    	} else {
+//    		DAC_Buffer[i] = DAC_Buffer[i - 1] + 2048/N;
+//    	}
+//    }
+//    HAL_TIM_Base_Start(&htim2);
+//    TimerData=(uint32_t)(80000000/(N*F));
+//    TIM2->ARR=TimerData;
+//    HAL_DAC_Start_DMA(&hdac1,DAC_CHANNEL_1,(uint32_t *)DAC_Buffer,N,DAC_ALIGN_12B_R);
 
 
 //  //Funcion cuadrada
@@ -148,28 +134,43 @@ int main(void)
 //  HAL_DAC_Start_DMA(&hdac1,DAC_CHANNEL_1,(uint32_t *)DAC_Buffer,N,DAC_ALIGN_12B_R);
 
 
-  /*
-  //Funcion senoidal
-  for(int i=0; i<N; i++) {
-	  DAC_Buffer[i]=(uint32_t)(2048+2047*sinf(2*M_PI*i/N));
-  }
-  HAL_TIM_Base_Start(&htim2);
-  TimerData=(uint32_t)(80000000/(N*F));
-  TIM2->ARR=TimerData;
-  HAL_DAC_Start_DMA(&hdac1,DAC_CHANNEL_1,(uint32_t *)DAC_Buffer,N,DAC_ALIGN_12B_R);
-  */
 
-  /*
-  //Funcion triangular
-  HAL_TIM_Base_Start(&htim2);
-  TimerData=(uint32_t)(80000000/(N*F));
-  TIM2->ARR=TimerData;
-  HAL_DAC_Start(&hdac1,DAC_CHANNEL_1);
-  HAL_DAC_SetValue(&hdac1,DAC_CHANNEL_1,DAC_ALIGN_12B_R, 1000);
-  HAL_Delay(1000);
-  HAL_DACEx_TriangleWaveGenerate(&hdac1,DAC_CHANNEL_1,DAC_TRIANGLEAMPLITUDE_31);
+//  //Funcion senoidal
+//  for(int i=0; i<N; i++) {
+//	  DAC_Buffer[i]=(uint32_t)(2048+2047*sinf(2*M_PI*i/N));
+//  }
+//  HAL_TIM_Base_Start(&htim2);
+//  TimerData=(uint32_t)(80000000/(N*F));
+//  TIM2->ARR=TimerData;
+//  HAL_DAC_Start_DMA(&hdac1,DAC_CHANNEL_1,(uint32_t *)DAC_Buffer,N,DAC_ALIGN_12B_R);
 
-   */
+
+
+//  //Funcion triangular
+//  HAL_TIM_Base_Start(&htim2);
+//  TimerData=(uint32_t)(80000000/(N*F));
+//  TIM2->ARR=TimerData;
+//  HAL_DAC_Start(&hdac1,DAC_CHANNEL_1);
+//  HAL_DACEx_TriangleWaveGenerate(&hdac1,DAC_CHANNEL_1,DAC_TRIANGLEAMPLITUDE_31);
+
+  //Funcion triangulo test
+
+	for(int i=0; i<N; i++) {
+		if(i == 0) {
+			DAC_Buffer[i] = 2048;
+		} else if(i >= 1 && i < N/2) {
+			DAC_Buffer[i] = DAC_Buffer[i - 1] + (2048/N)*2;
+		} else if(i == N/2) {
+			DAC_Buffer[i] = 4095;
+		} else {
+			DAC_Buffer[i] = DAC_Buffer[i - 1] - (2048/N)*2;
+		}
+	}
+    HAL_TIM_Base_Start(&htim2);
+    TimerData=(uint32_t)(80000000/(N*F));
+    TIM2->ARR=TimerData;
+    HAL_DAC_Start_DMA(&hdac1,DAC_CHANNEL_1,(uint32_t *)DAC_Buffer,N,DAC_ALIGN_12B_R);
+
 
 
   /* USER CODE END 2 */
