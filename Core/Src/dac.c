@@ -50,7 +50,7 @@ void MX_DAC1_Init(void)
   {
     Error_Handler();
   }
-  HAL_DACEx_SelfCalibrate(&hdac1, &sConfig, DAC_CHANNEL_1);
+
 }
 
 void HAL_DAC_MspInit(DAC_HandleTypeDef* dacHandle)
